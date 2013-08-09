@@ -1,0 +1,13 @@
+#!/bin/bash
+
+INFECT=`cat infection.json | tr -d '[\r\n]' | JSON.sh | grep '\["infect"\]' | cut -f 2 | tr -d "[\'\"]"`
+PACKAGE=`cat packages/$1/infection.json | tr -d '[\r\n]' | JSON.sh | grep '\["infect"\]' | cut -f 2 | tr -d "[\'\"]"`
+
+echo "packing $INFECT/*/packages/$1 into $PACKAGE"
+for DIR in $INFECT/*/; do
+  if [ -d "$DIR"packages/$1 ]; then
+    mkdir -p packages/$1/$PACKAGE/`basename $DIR`
+    cp "$DIR"packages/$1/* packages/$1/$PACKAGE/`basename $DIR`
+  fi
+done
+
