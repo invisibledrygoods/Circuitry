@@ -44,14 +44,16 @@ public class ComplexCircuitComponent : CircuitComponent
                 return edge;
             }
         }
+
         Edge newEdge = new Edge(name);
         edges.Add(newEdge);
+
         return newEdge;
     }
 
     public override void Spark()
     {
-        Spark("next");
+        Spark("");
     }
 
     public override void Spark(string name)
