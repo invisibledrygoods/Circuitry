@@ -19,26 +19,25 @@ public class RelaysSparksTest : TestBehaviour
     public void ItRelaysSparks()
     {
         it = transform.Require<RelaysSparks>();
-        it.next = new List<CircuitComponent>();
     }
 
     public void AnEmitterIsChainedToIt()
     {
         emitter = new GameObject().transform.Require<MockCircuitComponent>();
         emitter.next = new List<CircuitComponent>();
-        emitter.Chain("next", it);
+        emitter.next.Add(it);
     }
 
     public void ItIsChainedToAReceiver()
     {
         receiver = new GameObject().transform.Require<MockCircuitComponent>();
-        receiver.next = new List<CircuitComponent>();
-        it.Chain("next", receiver);
+        it.next = new List<CircuitComponent>();
+        it.next.Add(receiver);
     }
 
     public void TheEmitterSparks()
     {
-        emitter.Spark("next");
+        emitter.Spark(emitter.next);
     }
 
     public void TheReceiverShouldBeEnabled()

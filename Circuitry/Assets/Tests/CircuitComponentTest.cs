@@ -11,32 +11,39 @@ public class CircuitComponentTest : TestBehaviour
 
     public override void Spec()
     {
-        Given("its 'next' is chained to a receiver").When("it sparks 'next'").Then("it should be disabled").And("the receiver should be enabled");
-        Given("its 'next' is chained to a receiver").And("its 'next' is chained to another receiver").When("it sparks 'next'").Then("the receiver should be enabled").And("the other receiver should be enabled");
-        Given("its 'next' is chained to a receiver").And("its 'nuhUh' is chained to another receiver").When("it sparks 'next'").Then("the receiver should be enabled").And("the other receiver should not be enabled");
+        Given("its next is chained to a receiver").When("it sparks next").Then("it should be disabled").And("the receiver should be enabled");
+        Given("its next is chained to a receiver").And("its next is chained to another receiver").When("it sparks next").Then("the receiver should be enabled").And("the other receiver should be enabled");
+        Given("its next is chained to a receiver").And("its nuhUh is chained to another receiver").When("it sparks next").Then("the receiver should be enabled").And("the other receiver should not be enabled");
     }
 
-    public void Its__IsChainedToAReceiver(string edge)
+    public void ItsNextIsChainedToAReceiver()
     {
         it = transform.Require<MockCircuitComponent>();
         it.next = new List<CircuitComponent>();
         it.nuhUh = new List<CircuitComponent>();
         receiver = new GameObject().transform.Require<MockCircuitComponent>();
-        it.Chain(edge, receiver);
+        it.next.Add(receiver);
         it.enabled = false;
         receiver.enabled = false;
     }
 
-    public void Its__IsChainedToAnotherReceiver(string edge)
+    public void ItsNextIsChainedToAnotherReceiver()
     {
         otherReceiver = new GameObject().transform.Require<MockCircuitComponent>();
-        it.Chain(edge, otherReceiver);
+        it.next.Add(otherReceiver);
         otherReceiver.enabled = false;
     }
 
-    public void ItSparks__(string edge)
+    public void ItsNuhUhIsChainedToAnotherReceiver()
     {
-        it.Spark(edge);
+        otherReceiver = new GameObject().transform.Require<MockCircuitComponent>();
+        it.nuhUh.Add(otherReceiver);
+        otherReceiver.enabled = false;
+    }
+
+    public void ItSparksNext()
+    {
+        it.Spark(it.next);
     }
 
     public void ItShouldBeDisabled()

@@ -8,7 +8,7 @@ public class RelaysSparks : CircuitComponent
 
     void OnEnable()
     {
-        Spark("next");
+        Spark(next);
     }
 
     void OnDrawGizmos()
