@@ -4,10 +4,36 @@ using Require;
 using System;
 using System.Reflection;
 
-public class CircuitComponent : MonoBehaviour
+public abstract class CircuitComponent : MonoBehaviour
 {
+    public static int stackLimit = 100;
+
+    float lastTimestamp;
+    int numberOfSparksThisTimestamp;
+
     public void Spark(List<CircuitComponent> edge)
     {
+        if (lastTimestamp != Time.time)
+        {
+            lastTimestamp = Time.time;
+            numberOfSparksThisTimestamp = 0;
+        }
+
+        numberOfSparksThisTimestamp++;
+        if (numberOfSparksThisTimestamp > stackLimit)
+        {
+            foreach (FieldInfo field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
+            {
+                if (field.GetValue(this) == edge)
+                {
+                    throw new StackOverflowException("Short circuit in " + name + " along '" + field.Name + "' edge");
+                }
+            }
+            throw new StackOverflowException("Short circuit in " + name + " along unknown edge");
+        }
+
+        enabled = false;
+
         if (edge != null)
         {
             foreach (CircuitComponent component in edge)
@@ -15,8 +41,6 @@ public class CircuitComponent : MonoBehaviour
                 component.enabled = true;
             }
         }
-
-        enabled = false;
     }
 
     public void DrawWires()

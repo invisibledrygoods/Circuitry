@@ -6,9 +6,22 @@ public class RelaysSparks : CircuitComponent
 {
     public List<CircuitComponent> next;
 
+    bool spark = false;
+
+    void Update()
+    {
+        // one frame delay to prevent short circuits
+        if (spark)
+        {
+            Spark(next);
+        }
+
+        spark = false;
+    }
+
     void OnEnable()
     {
-        Spark(next);
+        spark = true;
     }
 
     void OnDrawGizmos()
