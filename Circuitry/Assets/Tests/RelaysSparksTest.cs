@@ -1,13 +1,13 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using Shouldly;
 using Require;
 
 public class RelaysSparksTest : TestBehaviour
 {
-    SimpleCircuitComponent emitter;
+    MockCircuitComponent emitter;
     RelaysSparks it;
-    SimpleCircuitComponent receiver;
+    MockCircuitComponent receiver;
 
     public override void Spec()
     {
@@ -19,23 +19,26 @@ public class RelaysSparksTest : TestBehaviour
     public void ItRelaysSparks()
     {
         it = transform.Require<RelaysSparks>();
+        it.next = new List<CircuitComponent>();
     }
 
     public void AnEmitterIsChainedToIt()
     {
-        emitter = new GameObject().transform.Require<SimpleCircuitComponent>();
-        emitter.ChainTo(it);
+        emitter = new GameObject().transform.Require<MockCircuitComponent>();
+        emitter.next = new List<CircuitComponent>();
+        emitter.Chain("next", it);
     }
 
     public void ItIsChainedToAReceiver()
     {
-        receiver = new GameObject().transform.Require<SimpleCircuitComponent>();
-        it.ChainTo(receiver);
+        receiver = new GameObject().transform.Require<MockCircuitComponent>();
+        receiver.next = new List<CircuitComponent>();
+        it.Chain("next", receiver);
     }
 
     public void TheEmitterSparks()
     {
-        emitter.Spark();
+        emitter.Spark("next");
     }
 
     public void TheReceiverShouldBeEnabled()
