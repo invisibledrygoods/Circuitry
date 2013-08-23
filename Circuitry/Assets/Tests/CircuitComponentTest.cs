@@ -5,7 +5,7 @@ using Require;
 
 public class CircuitComponentTest : TestBehaviour
 {
-    MockComplexCircuitComponent it;
+    MockCircuitComponent it;
     MockCircuitComponent receiver;
     MockCircuitComponent otherReceiver;
 
@@ -18,7 +18,7 @@ public class CircuitComponentTest : TestBehaviour
 
     public void Its__IsChainedToAReceiver(string edge)
     {
-        it = transform.Require<MockComplexCircuitComponent>();
+        it = transform.Require<MockCircuitComponent>();
         it.next = new List<CircuitComponent>();
         it.nuhUh = new List<CircuitComponent>();
         receiver = new GameObject().transform.Require<MockCircuitComponent>();

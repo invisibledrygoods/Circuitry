@@ -5,4 +5,5 @@ using Require;
 public class MockCircuitComponent : CircuitComponent
 {
     public List<CircuitComponent> next;
+    public List<CircuitComponent> nuhUh;
 }
