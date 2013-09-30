@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Require;
 using System;
+using System.Text.RegularExpressions;
 using System.Reflection;
 
 public abstract class CircuitComponent : MonoBehaviour
@@ -68,14 +69,14 @@ public abstract class CircuitComponent : MonoBehaviour
                 foreach (CircuitComponent component in components)
                 {
                     GizmoTurtle turtle = new GizmoTurtle(new Ray(transform.position, component.transform.position - transform.position));
-                    RobotLetters font = new RobotLetters(turtle, 0.2f);
+                    RobotLetters font = new RobotLetters(turtle, 0.1f);
 
                     turtle.PenDown().Forward(0.2f).RotateLeft(90).Forward(0.05f).RotateRight(120).Forward(0.1f).RotateRight(150).Forward(0.1f).RotateRight(180);
                     turtle.PenUp().Forward(0.15f);
 
                     if (field.Name.ToLower() != "next")
                     {
-                        font.Write(field.Name);
+                        font.Write(Regex.Replace(field.Name, @"[A-Z]", " $0").Trim());
                     }
 
                     turtle.PenUp().Forward(0.05f);
@@ -85,5 +86,19 @@ public abstract class CircuitComponent : MonoBehaviour
         }
 
         Gizmos.color = oldColor;
+    }
+
+    public void DrawLabel()
+    {
+        Color oldColor = Gizmos.color;
+
+        GizmoTurtle turtle = new GizmoTurtle(transform.position);
+        RobotLetters font = new RobotLetters(turtle, 0.1f);
+
+        turtle.Forward(0.15f);
+        turtle.RotateRight(90);
+        turtle.Forward(0.02f);
+        turtle.RotateLeft(90);
+        font.Write(Regex.Replace(name, @"[A-Z]", " $0").Trim());
     }
 }
