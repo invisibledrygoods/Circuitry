@@ -91,6 +91,7 @@ public abstract class CircuitComponent : MonoBehaviour
     public void DrawLabel()
     {
         Color oldColor = Gizmos.color;
+        Gizmos.color = Color.white;
 
         GizmoTurtle turtle = new GizmoTurtle(transform.position);
         RobotLetters font = new RobotLetters(turtle, 0.1f);
@@ -100,5 +101,7 @@ public abstract class CircuitComponent : MonoBehaviour
         turtle.Forward(0.02f);
         turtle.RotateLeft(90);
         font.Write(Regex.Replace(name, @"[A-Z]", " $0").Trim());
+
+        Gizmos.color = oldColor;
     }
 }
