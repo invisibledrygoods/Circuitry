@@ -11,9 +11,10 @@ public class CircuitComponentTest : TestBehaviour
 
     public override void Spec()
     {
-        Given("its next is chained to a receiver").When("it sparks next").Then("it should be disabled").And("the receiver should be enabled");
-        Given("its next is chained to a receiver").And("its next is chained to another receiver").When("it sparks next").Then("the receiver should be enabled").And("the other receiver should be enabled");
-        Given("its next is chained to a receiver").And("its nuhUh is chained to another receiver").When("it sparks next").Then("the receiver should be enabled").And("the other receiver should not be enabled");
+        Scenario("is a Circuit Component");
+        Given("its next is chained to a receiver").When("it sparks next").Then("it should be disabled").And("the receiver should be enabled").Because("sparks should travel down the circuit");
+        Given("its next is chained to a receiver").And("its next is chained to another receiver").When("it sparks next").Then("the receiver should be enabled").And("the other receiver should be enabled").Because("sparks should branch");
+        Given("its next is chained to a receiver").And("its nuhUh is chained to another receiver").When("it sparks next").Then("the receiver should be enabled").And("the other receiver should not be enabled").Because("it should only be able to send one signal at a time");
     }
 
     public void ItsNextIsChainedToAReceiver()

@@ -11,9 +11,12 @@ public class RelaysSparksTest : TestBehaviour
 
     public override void Spec()
     {
-        Given("it relays sparks").And("an emitter is chained to it").And("it is chained to a receiver")
+        Given("it relays sparks")
+            .And("an emitter is chained to it")
+            .And("it is chained to a receiver")
             .When("the emitter sparks")
-            .Then("the receiver should be enabled");
+            .Then("the receiver should be enabled")
+            .Because("it should re-emit sparks immediately after activating");
     }
 
     public void ItRelaysSparks()
