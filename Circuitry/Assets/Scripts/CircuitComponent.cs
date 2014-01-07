@@ -68,24 +68,51 @@ public abstract class CircuitComponent : MonoBehaviour
             {
                 foreach (CircuitComponent component in components)
                 {
-                    GizmoTurtle turtle = new GizmoTurtle(new Ray(transform.position, component.transform.position - transform.position));
-                    RobotLetters font = new RobotLetters(turtle, 0.1f);
-
-                    turtle.PenDown().Forward(0.2f).RotateLeft(90).Forward(0.05f).RotateRight(120).Forward(0.1f).RotateRight(150).Forward(0.1f).RotateRight(180);
-                    turtle.PenUp().Forward(0.15f);
-
                     if (field.Name.ToLower() != "next")
                     {
-                        font.Write(Regex.Replace(field.Name, @"[A-Z]", " $0").Trim());
+                        DrawWire(Regex.Replace(field.Name, @"[A-Z]", " $0").Trim(), component.transform.position);
                     }
+                    else
+                    {
+                        DrawWire("", component.transform.position);
+                    }
+                }
+            }
 
-                    turtle.PenUp().Forward(0.05f);
-                    turtle.PenDown().Forward(Vector3.Distance(turtle.Position, component.transform.position));
+            if (this is CircuitDictionaryComponent) 
+            {
+                foreach (CircuitDictionaryItem item in (this as CircuitDictionaryComponent).transitions)
+                {
+                    foreach (CircuitComponent component in item.transition)
+                    {
+                        if (item.transitionName.ToLower() != "next")
+                        {
+                            DrawWire(Regex.Replace(item.transitionName, @"[A-Z]", " $0").Trim(), component.transform.position);
+                        }
+                        else
+                        {
+                            DrawWire("", component.transform.position);
+                        }
+                    }
                 }
             }
         }
 
         Gizmos.color = oldColor;
+    }
+
+    void DrawWire(string label, Vector3 to)
+    {
+        GizmoTurtle turtle = new GizmoTurtle(new Ray(transform.position, to - transform.position));
+        RobotLetters font = new RobotLetters(turtle, 0.1f);
+
+        turtle.PenDown().Forward(0.2f).RotateLeft(90).Forward(0.05f).RotateRight(120).Forward(0.1f).RotateRight(150).Forward(0.1f).RotateRight(180);
+        turtle.PenUp().Forward(0.15f);
+
+        font.Write(Regex.Replace(label, @"[A-Z]", " $0").Trim());
+
+        turtle.PenUp().Forward(0.05f);
+        turtle.PenDown().Forward(Vector3.Distance(turtle.Position, to));
     }
 
     public void DrawLabel()
