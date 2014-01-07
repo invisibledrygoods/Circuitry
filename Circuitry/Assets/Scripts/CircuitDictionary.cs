@@ -16,12 +16,20 @@ public class CircuitDictionaryComponent : CircuitComponent
 
     public void Spark(string transitionName)
     {
+        bool found = false;
+
         foreach (CircuitDictionaryItem item in transitions)
         {
             if (transitionName == item.transitionName)
             {
                 Spark(item.transition);
+                found = true;
             }
+        }
+
+        if (!found)
+        {
+            throw new KeyNotFoundException("trying to spark " + transitionName + " but it doesn't exist");
         }
     }
 

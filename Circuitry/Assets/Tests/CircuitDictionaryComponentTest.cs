@@ -2,12 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using Shouldly;
 using Require;
+using System;
 
 public class CircuitDictionaryComponentTest : TestBehaviour
 {
     CircuitDictionaryComponent it;
     MockCircuitComponent receiver;
     MockCircuitComponent otherReceiver;
+    Exception exception;
 
     public override void Spec()
     {
@@ -15,6 +17,7 @@ public class CircuitDictionaryComponentTest : TestBehaviour
         Given("its 'next' is chained to a receiver").When("it sparks 'next'").Then("it should be disabled").And("the receiver should be enabled").Because("sparks should travel down the circuit");
         Given("its 'next' is chained to a receiver").And("its 'next' is chained to another receiver").When("it sparks 'next'").Then("the receiver should be enabled").And("the other receiver should be enabled").Because("sparks should branch");
         Given("its 'next' is chained to a receiver").And("its 'nuhUh' is chained to another receiver").When("it sparks 'next'").Then("the receiver should be enabled").And("the other receiver should not be enabled").Because("it should only be able to send one signal at a time");
+        Given("its 'next' is chained to a receiver").When("it sparks something that doesnt exist").Then("it should throw a KeyNotFound exception").Because("it should notify me of a potential typo");
     }
 
     public void Its__IsChainedToAReceiver(string transition)
@@ -38,6 +41,18 @@ public class CircuitDictionaryComponentTest : TestBehaviour
         it.Spark("next");
     }
 
+    public void ItSparksSomethingThatDoesntExist()
+    {
+        try
+        {
+            it.Spark("doesntExist");
+        }
+        catch (Exception e)
+        {
+            exception = e;
+        }
+    }
+
     public void ItShouldBeDisabled()
     {
         it.enabled.ShouldBe(false);
@@ -56,5 +71,10 @@ public class CircuitDictionaryComponentTest : TestBehaviour
     public void TheOtherReceiverShouldNotBeEnabled()
     {
         otherReceiver.enabled.ShouldBe(false);
+    }
+
+    public void ItShouldThrowAKeyNotFoundException()
+    {
+        exception.ShouldBeTypeOf<KeyNotFoundException>();
     }
 }
