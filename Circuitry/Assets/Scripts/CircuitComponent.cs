@@ -46,48 +46,33 @@ public abstract class CircuitComponent : MonoBehaviour
 
     public void DrawWires()
     {
-        Color oldColor = Gizmos.color;
-
         if (enabled)
         {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, 0.1f);
+            GizmoTurtle.WithGizmoColor(Color.yellow, () =>
+            {
+                Gizmos.DrawWireSphere(transform.position, 0.1f);
+            });
         }
         else
         {
-            Gizmos.color = Color.gray;
-            Gizmos.DrawWireSphere(transform.position, 0.1f);
+            GizmoTurtle.WithGizmoColor(Color.gray, () =>
+            {
+                Gizmos.DrawWireSphere(transform.position, 0.1f);
+            });
         }
 
-        Gizmos.color = Color.white;
-
-        foreach (FieldInfo field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
+        GizmoTurtle.WithGizmoColor(Color.white, () =>
         {
-            List<CircuitComponent> components = field.GetValue(this) as List<CircuitComponent>;
-            if (components != null)
+            foreach (FieldInfo field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
-                foreach (CircuitComponent component in components)
+                List<CircuitComponent> components = field.GetValue(this) as List<CircuitComponent>;
+                if (components != null)
                 {
-                    if (field.Name.ToLower() != "next")
+                    foreach (CircuitComponent component in components)
                     {
-                        DrawWire(Regex.Replace(field.Name, @"[A-Z]", " $0").Trim(), component.transform.position);
-                    }
-                    else
-                    {
-                        DrawWire("", component.transform.position);
-                    }
-                }
-            }
-
-            if (this is CircuitDictionaryComponent) 
-            {
-                foreach (CircuitDictionaryItem item in (this as CircuitDictionaryComponent).transitions)
-                {
-                    foreach (CircuitComponent component in item.transition)
-                    {
-                        if (item.transitionName.ToLower() != "next")
+                        if (field.Name.ToLower() != "next")
                         {
-                            DrawWire(Regex.Replace(item.transitionName, @"[A-Z]", " $0").Trim(), component.transform.position);
+                            DrawWire(Regex.Replace(field.Name, @"[A-Z]", " $0").Trim(), component.transform.position);
                         }
                         else
                         {
@@ -95,10 +80,26 @@ public abstract class CircuitComponent : MonoBehaviour
                         }
                     }
                 }
-            }
-        }
 
-        Gizmos.color = oldColor;
+                if (this is CircuitDictionaryComponent)
+                {
+                    foreach (CircuitDictionaryItem item in (this as CircuitDictionaryComponent).transitions)
+                    {
+                        foreach (CircuitComponent component in item.transition)
+                        {
+                            if (item.transitionName.ToLower() != "next")
+                            {
+                                DrawWire(Regex.Replace(item.transitionName, @"[A-Z]", " $0").Trim(), component.transform.position);
+                            }
+                            else
+                            {
+                                DrawWire("", component.transform.position);
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     void DrawWire(string label, Vector3 to)
@@ -117,18 +118,16 @@ public abstract class CircuitComponent : MonoBehaviour
 
     public void DrawLabel()
     {
-        Color oldColor = Gizmos.color;
-        Gizmos.color = Color.white;
+        GizmoTurtle.WithGizmoColor(Color.white, () =>
+        {
+            GizmoTurtle turtle = new GizmoTurtle(transform.position);
+            RobotLetters font = new RobotLetters(turtle, 0.1f);
 
-        GizmoTurtle turtle = new GizmoTurtle(transform.position);
-        RobotLetters font = new RobotLetters(turtle, 0.1f);
-
-        turtle.Forward(0.15f);
-        turtle.RotateRight(90);
-        turtle.Forward(0.02f);
-        turtle.RotateLeft(90);
-        font.Write(Regex.Replace(name, @"[A-Z]", " $0").Trim());
-
-        Gizmos.color = oldColor;
+            turtle.Forward(0.15f);
+            turtle.RotateRight(90);
+            turtle.Forward(0.02f);
+            turtle.RotateLeft(90);
+            font.Write(Regex.Replace(name, @"[A-Z]", " $0").Trim());
+        });
     }
 }
